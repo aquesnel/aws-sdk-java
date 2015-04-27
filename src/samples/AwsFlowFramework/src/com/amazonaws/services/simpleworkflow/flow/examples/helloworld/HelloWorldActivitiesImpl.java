@@ -20,8 +20,10 @@ package com.amazonaws.services.simpleworkflow.flow.examples.helloworld;
 public class HelloWorldActivitiesImpl implements HelloWorldActivities {
     
 	@Override
-	public void printHello(String name) {
-		System.out.println("Hello " + name + "!");		
+	public String printHello(String name) {
+	    String msg = "Hello " + name + "!";
+		System.out.println(msg);		
+		return msg;
 	}
 
 }

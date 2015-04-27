@@ -14,6 +14,9 @@
  */
 package com.amazonaws.services.simpleworkflow.flow.examples.helloworld;
 
+import com.amazonaws.services.simpleworkflow.flow.annotations.Asynchronous;
+import com.amazonaws.services.simpleworkflow.flow.core.Promise;
+import com.amazonaws.services.simpleworkflow.flow.core.Settable;
 
 /**
  * Implementation of the hello world workflow
@@ -23,8 +26,22 @@ public class HelloWorldWorkflowImpl implements HelloWorldWorkflow{
     HelloWorldActivitiesClient client = new HelloWorldActivitiesClientImpl();
 
     @Override
-    public void helloWorld(String name) {
-        client.printHello(name);
+    public Promise<HelloWorldResult> helloWorld(final String name)
+    {
+        final Promise<String> result = client.printHello(name);
+        return makeResult(name, result);
     }
-    
+
+    @Asynchronous
+    private Promise<HelloWorldResult> makeResult(String name, Promise<String> printResult)
+    {
+        HelloWorldResult helloWorldResult = new HelloWorldResult();
+        helloWorldResult.setResult(printResult.get());
+        helloWorldResult.setUser(name);
+
+        Settable<HelloWorldResult> result = new Settable<HelloWorldResult>();
+        result.set(helloWorldResult);
+        return result;
+    }
+
 }

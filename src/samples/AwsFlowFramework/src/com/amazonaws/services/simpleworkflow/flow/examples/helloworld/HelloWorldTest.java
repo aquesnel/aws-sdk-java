@@ -35,8 +35,10 @@ public class HelloWorldTest {
         private String greeting;
 
         @Override
-        public void printHello(String name) {
+        public String printHello(final String name)
+        {
             greeting = "Hello " + name + "!";
+            return greeting;
         }
 
         public String getGreeting() {
@@ -66,25 +68,33 @@ public class HelloWorldTest {
      */
     @Test
     public void testThroughClient() throws Exception {
-        HelloWorldWorkflowClient workflow = workflowFactory.getClient();
-        Promise<Void> done = workflow.helloWorld("World");
-        assertGreeting(done);
+        final HelloWorldWorkflowClient workflow = workflowFactory.getClient();
+        final Promise<HelloWorldResult> done = workflow.helloWorld("World");
+        assertGreetingWorld(done);
     }
 
     @Asynchronous
-    private void assertGreeting(Promise<Void> done) {
-        Assert.assertEquals("Hello World!", activitiesImplementation.getGreeting());
+    private void assertGreetingWorld(final Promise<HelloWorldResult> done)
+    {
+        assertGreeting("World", done);
+    }
+
+    @Asynchronous
+    private void assertGreeting(String expected, final Promise<HelloWorldResult> done)
+    {
+        Assert.assertEquals("Hello " + expected + "!", activitiesImplementation.getGreeting());
+        Assert.assertEquals("Hello " + expected + "!", done.get());
     }
 
     @Test
     public void testThroughClientAssertWithTask() throws Exception {
-        HelloWorldWorkflowClient workflow = workflowFactory.getClient();
-        Promise<Void> done = workflow.helloWorld("AWS");
+        final HelloWorldWorkflowClient workflow = workflowFactory.getClient();
+        final Promise<HelloWorldResult> done = workflow.helloWorld("AWS");
         new Task(done) {
 
             @Override
             protected void doExecute() throws Throwable {
-                Assert.assertEquals("Hello AWS!", activitiesImplementation.getGreeting());
+                assertGreeting("AWS", done);
             }
         };
     }
@@ -100,7 +110,7 @@ public class HelloWorldTest {
 
             @Override
             protected void doTry() throws Throwable {
-                // helloWorld returns void so we use TryFinally 
+                // helloWorld returns void so we use TryFinally
                 // to wait for its completion
                 workflow.helloWorld("SWF");
             }

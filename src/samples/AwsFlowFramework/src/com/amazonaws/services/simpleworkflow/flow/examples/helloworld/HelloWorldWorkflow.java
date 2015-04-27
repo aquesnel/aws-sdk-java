@@ -17,6 +17,7 @@ package com.amazonaws.services.simpleworkflow.flow.examples.helloworld;
 import com.amazonaws.services.simpleworkflow.flow.annotations.Execute;
 import com.amazonaws.services.simpleworkflow.flow.annotations.Workflow;
 import com.amazonaws.services.simpleworkflow.flow.annotations.WorkflowRegistrationOptions;
+import com.amazonaws.services.simpleworkflow.flow.core.Promise;
 
 /**
  * Contract of the hello world workflow
@@ -26,6 +27,6 @@ import com.amazonaws.services.simpleworkflow.flow.annotations.WorkflowRegistrati
 public interface HelloWorldWorkflow {
 
     @Execute(version = "1.0")
-    void helloWorld(String name);
+    Promise<HelloWorldResult> helloWorld(String name);
 
 }

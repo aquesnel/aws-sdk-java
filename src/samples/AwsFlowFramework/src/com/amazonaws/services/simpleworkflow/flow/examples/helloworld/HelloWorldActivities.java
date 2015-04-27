@@ -26,6 +26,6 @@ public interface HelloWorldActivities {
 
     @Activity(name = "PrintHello", version = "1.0")
     @ActivityRegistrationOptions(defaultTaskScheduleToStartTimeoutSeconds = 30, defaultTaskStartToCloseTimeoutSeconds = 10)
-    void printHello(String name);
-    
+    String printHello(String name);
+
 }
